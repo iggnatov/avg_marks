@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Specs</title>
+</head>
+<body>
+
+<h3>All specs</h3>
+<table>
+    <tbody>
+    {% for spec in specs %}
+    <tr>
+        <td>{{ spec.code }}</td>
+        <td>{{ spec.spec_name }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
