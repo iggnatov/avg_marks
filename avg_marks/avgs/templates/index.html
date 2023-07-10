@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>All applications</h3>
+<table>
+    <tbody>
+    {% for app in apps %}
+    <tr>
+        <td>{{ app.id }}</td>
+        <td>{{ app.spec_code }}</td>
+        <td>{{ app.avg_marks }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
