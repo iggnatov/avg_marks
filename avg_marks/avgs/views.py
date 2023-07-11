@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Application
 from .serializers import AppSerializer
@@ -22,9 +24,37 @@ def index(request):
 
 
 class AppViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.filter(spec_code="09.02.07")\
-        .order_by("avg_marks")\
-        .filter(avg_marks__gte=4.2)\
+    serializer_class = AppSerializer
+
+    queryset = Application.objects.filter(spec_code="09.02.07") \
+        .order_by("avg_marks") \
+        .filter(avg_marks__gte=4.2) \
         .filter(originals=True)
 
-    serializer_class = AppSerializer
+
+class AppRate(APIView):
+    def get(self, request):
+        code = self.request.query_params.get('spec_code')
+        mark = self.request.query_params.get('mark')
+        queryset = Application.objects.filter(spec_code=code).filter(avg_marks__gte=mark)
+        rate_mos = len(queryset.filter(originals=False))
+        rate_originals = len(queryset.filter(originals=True))
+        response = {
+            'spec_code': code,
+            'mark': mark,
+            'rate_mos': rate_mos,
+            'rate_originals': rate_originals
+        }
+        return Response(response)
+
+# class AppList(generics.ListAPIView):
+#     serializer_class = AppSerializer
+#
+#     def get_queryset(self):
+#         queryset = Application.objects.all()
+#         code = self.request.query_params.get('spec_code')
+#         mark = self.request.query_params.get('mark')
+#         if code is not None:
+#             queryset = queryset.filter(spec_code=code).filter(avg_marks__gte=mark)
+#             print(type(queryset[0]))
+#         return queryset

@@ -7,3 +7,4 @@ class AppSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ['spec_code', 'financing_type', 'originals', 'avg_marks']
+
