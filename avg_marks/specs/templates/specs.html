@@ -1,22 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Specs</title>
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block content %}
 <h3>All specs</h3>
 <table>
+    <thead>
+        <tr>
+            <th>Код</th>
+            <th>Специальность</th>
+            <th>Кол-во поданных заявлений</th>
+            <th>Кол-во сданных документов</th>
+            <th>Средний балл аттестата</th>
+            <th>Средний балл аттестата по оригиналам заявлений</th>
+        </tr>
+    </thead>
     <tbody>
     {% for spec in specs %}
     <tr>
         <td>{{ spec.code }}</td>
         <td>{{ spec.spec_name }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
 
-</body>
-</html>
+{% endblock %}
