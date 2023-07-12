@@ -37,8 +37,8 @@ class AppRate(APIView):
         code = self.request.query_params.get('spec_code')
         mark = self.request.query_params.get('mark')
         queryset = Application.objects.filter(spec_code=code).filter(avg_marks__gte=mark)
-        rate_mos = len(queryset.filter(originals=False))
-        rate_originals = len(queryset.filter(originals=True))
+        rate_mos = len(queryset.filter(originals=False)) + 1
+        rate_originals = len(queryset.filter(originals=True)) + 1
         response = {
             'spec_code': code,
             'mark': mark,
