@@ -6,7 +6,7 @@ $(document).ready(function() {
         console.log('inputSpecValue: ', inputSpecValue, 'inputMarkValue: ', inputMarkValue);
 
         $.ajax({
-            url: 'http://194.58.111.243/avgs/api/avgs?spec_code=' + inputSpecValue + '&mark=' + inputMarkValue,
+            url: 'http://127.0.0.1:8000/avgs/api/avgs?spec_code=' + inputSpecValue + '&mark=' + inputMarkValue,
             method: 'get',              /* Метод запроса (post или get) */
             dataType: 'json',           /* Тип данных в ответе (xml, json, script, html). */
 //            data: {text: 'Текст'},      /* Данные передаваемые в массиве */
