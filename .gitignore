@@ -166,3 +166,6 @@ cython_debug/
 /.idea/inspectionProfiles/profiles_settings.xml
 /TestPage/
 /avg_marks/avg_marks/
+/xlsx_reformater/mytable.xlsx
+/xlsx_reformater/mytable1.xlsx
+/xlsx_reformater/test.csv
