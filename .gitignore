@@ -173,3 +173,5 @@ cython_debug/
 /xlsx_reformater/24.csv
 /xlsx_reformater/241.xlsx
 /xlsx_reformater/files/
+/.idea/csv-editor.xml
+/dump-avg_marks-202307241958
