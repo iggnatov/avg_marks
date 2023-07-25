@@ -169,3 +169,7 @@ cython_debug/
 /xlsx_reformater/mytable.xlsx
 /xlsx_reformater/mytable1.xlsx
 /xlsx_reformater/test.csv
+/xlsx_reformater/files/24.xlsx
+/xlsx_reformater/24.csv
+/xlsx_reformater/241.xlsx
+/xlsx_reformater/files/

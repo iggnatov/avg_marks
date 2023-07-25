@@ -1,12 +1,12 @@
 import csv
 
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook
 
 
-def reformat():
+def reformat(file_name):
     """Reformat table.xlsx to a file.csv with only necessary columns"""
 
-    wb = load_workbook(filename='mytable.xlsx')
+    wb = load_workbook(filename=f'files/{file_name}.xlsx')
     ws = wb.active
     ws.unmerge_cells('A1:Q1')
     ws.delete_rows(1)
@@ -17,6 +17,7 @@ def reformat():
     ws.delete_cols(7, 2)
 
     rows = ws.max_row
+    print(f'Quantity of records: {rows}.')
 
     ws['A1'].value = 'spec_code_id'
     ws['B1'].value = 'financing_type'
@@ -25,15 +26,22 @@ def reformat():
     ws['E1'].value = 'grade'
     ws['F1'].value = 'certificate_number'
 
-    for row in ws.iter_rows(min_row=1, min_col=1, max_col=6, max_row=1):
+    for row in ws.iter_rows(min_row=1, min_col=1, max_col=1, max_row=rows):
         for cell in row:
             if 'Техническая эксплуатация' in cell.value:
-                cell.value = cell.value.replace(' (по отраслям)', '')
-
-    for row in ws.iter_rows(min_row=2, min_col=1, max_col=1, max_row=rows):
-        for cell in row:
-            if 'Техническая эксплуатация' in cell.value:
-                cell.value = cell.value.replace(' (по отраслям)', '')
+                cell.value = '13.02.11'
+            elif 'Графический' in cell.value:
+                cell.value = '54.01.20'
+            elif 'Информационные' in cell.value:
+                cell.value = '09.02.07'
+            elif 'Компьютерные' in cell.value:
+                cell.value = '09.02.01'
+            elif 'Сетевое' in cell.value:
+                cell.value = '09.02.06'
+            elif 'Обеспечение' in cell.value:
+                cell.value = '10.02.05'
+            elif 'Электр' in cell.value:
+                cell.value = '13.01.14'
 
     for row in ws.iter_rows(min_row=2, min_col=2, max_col=2, max_row=rows):
         for cell in row:
@@ -49,10 +57,6 @@ def reformat():
             else:
                 cell.value = False
 
-    # for row in ws.iter_rows(min_row=2, min_col=4, max_col=4, max_row=rows):
-    #     for cell in row:
-    #         print(cell.value)
-
     for row in ws.iter_rows(min_row=2, min_col=5, max_col=5, max_row=rows):
         for cell in row:
             if cell.value == 'Аттестат об основном общем образовании':
@@ -60,15 +64,16 @@ def reformat():
             else:
                 cell.value = False
 
-    wb.save('mytable1.xlsx')
+        wb.save(f'files/{file_name}_m.xlsx')
     wb.close()
 
-    with open('test.csv', 'w', newline="") as f:
+    with open(f'files/{file_name}.csv', 'w', newline="") as f:
         c = csv.writer(f)
         for r in ws.rows:
             c.writerow([cell.value for cell in r])
 
+    print('File was reformatted successfully.')
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
-    reformat()
+    reformat(input("Enter date of the file - the file_name before '.xlsx'"))
