@@ -64,7 +64,7 @@ def reformat(file_name):
             else:
                 cell.value = False
 
-        wb.save(f'files/{file_name}_m.xlsx')
+    wb.save(f'files/{file_name}_m.xlsx')
     wb.close()
 
     with open(f'files/{file_name}.csv', 'w', newline="") as f:
