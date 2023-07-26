@@ -1,19 +1,27 @@
-{% extends "base.html" %}
-
 {% block content %}
-<p>Your rate is {{ rate }} </p>
-<h3>All applications</h3>
-<table>
+<h3>All stats</h3>
+<p>Response 1 is {{ response.response09.spec_100205.r_qty_mos_ }}</p>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Код</th>
+        <th scope="col">Специальность</th>
+        <th scope="col">Срок обучения</th>
+        <th scope="col">Корпус обучения</th>
+        <th scope="col">План приема</th>
+        <th scope="col">Количество поданных заявлений через портал mos.ru</th>
+        <th scope="col">Средний балл по заявлениям</th>
+        <th scope="col">Количество человек, сдавших оригиналы</th>
+        <th scope="col">Средний балл по оригиналам</th>
+      </tr>
+    </thead>
     <tbody>
-    {% for app in apps %}
-    <tr>
-        <td>{{ app.id }}</td>
-        <td>{{ app.spec_code }}</td>
-        <td>{{ app.avg_marks }}</td>
-    </tr>
-    {% endfor %}
+        <!-- <tr> коичество записей в подсловаре (2)
+            <td></td> количество элементов в подсловаре для каждой записи ( специальности ) = (7 для 9 и 4 для 11)
+        </tr> -->
+        
     </tbody>
 </table>
-
 
 {% endblock %}

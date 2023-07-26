@@ -1,6 +1,7 @@
 from decimal import *
 
 from django.db.models import Avg
+from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -50,18 +51,56 @@ class AppStat(APIView):
         response = {}
 
         for grade_status in grade:
-            response[f'response{grade_status}'] = {}
+            grader = '09' if grade_status else '11'
+            response[f'response{grader}'] = {}
             all_spec_codes = get_spec_codes(grade_status)
             for code in all_spec_codes:
+                coder = 'spec_' + code.replace('.', '')
+                response[f'response{grader}'][f'{coder}'] = {}
                 queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
-                response[f'response{grade_status}']['r_qty_mos_' + code.replace('.', '')] = queryset.count()
-                response[f'response{grade_status}']['r_qty_originals_' + code.replace('.', '')] = \
+                response[f'response{grader}'][f'{coder}']['r_qty_mos_'] = queryset.count()
+                response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
                     queryset.filter(originals=True).count()
-                response[f'response{grade_status}']['r_avg_marks_' + code.replace('.', '')] = \
+                response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
                     queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
                 r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
                     .quantize(Decimal('0.01')) - Decimal(0.43)
-                response[f'response{grade_status}']['r_avg_marks_originals_' + code.replace('.', '')] = \
+                response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
                     r_avg_marks_originals_
 
         return Response(response)
+
+
+def index(request):
+    def get_spec_codes(_grade):
+        if _grade:
+            specs = Spec.objects.filter(after_09=True)
+        else:
+            specs = Spec.objects.filter(after_11=True)
+        spec_codes = []
+        for i in range(len(specs)):
+            spec_codes.append(specs[i].code)
+        return spec_codes
+
+    grade = [True, False]
+    response = {}
+
+    for grade_status in grade:
+        grader = '09' if grade_status else '11'
+        response[f'response{grader}'] = {}
+        all_spec_codes = get_spec_codes(grade_status)
+        for code in all_spec_codes:
+            coder = 'spec_' + code.replace('.', '')
+            response[f'response{grader}'][f'{coder}'] = {}
+            queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
+            response[f'response{grader}'][f'{coder}']['r_qty_mos_'] = queryset.count()
+            response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
+                queryset.filter(originals=True).count()
+            response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
+                queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
+            r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
+                .quantize(Decimal('0.01')) - Decimal(0.43)
+            response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
+                r_avg_marks_originals_
+
+    return render(request, 'index.html', {'response': response})
