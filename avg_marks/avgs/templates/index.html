@@ -1,26 +1,55 @@
 {% block content %}
-<h3>All stats</h3>
-<p>Response 1 is {{ response.response09.spec_100205.r_qty_mos_ }}</p>
+<h3>Ход приема заявлений</h3>
+<p>2023-2024 учебный год<br/>Бюджетное отделение</p>
 
-<table class="table">
+<h4 class="table-header">После 9 класса</h4>
+<table class="table table-striped">
     <thead>
-      <tr>
-        <th scope="col">Код</th>
-        <th scope="col">Специальность</th>
-        <th scope="col">Срок обучения</th>
-        <th scope="col">Корпус обучения</th>
-        <th scope="col">План приема</th>
-        <th scope="col">Количество поданных заявлений через портал mos.ru</th>
-        <th scope="col">Средний балл по заявлениям</th>
-        <th scope="col">Количество человек, сдавших оригиналы</th>
-        <th scope="col">Средний балл по оригиналам</th>
-      </tr>
+        <tr>
+            <th scope="col">Код</th>
+            <th scope="col">Специальность</th>
+            <th scope="col">Корпус обучения</th>
+            <th scope="col">Срок обучения</th>
+            <th scope="col">План приема</th>
+            <th scope="col">Количество поданных заявлений через портал mos.ru</th>
+            <th scope="col">Количество человек, сдавших оригиналы</th>
+            <th scope="col">Средний балл по оригиналам</th>
+        </tr>
     </thead>
     <tbody>
-        <!-- <tr> коичество записей в подсловаре (2)
-            <td></td> количество элементов в подсловаре для каждой записи ( специальности ) = (7 для 9 и 4 для 11)
-        </tr> -->
-        
+        {% for key, value in response.response09.items %}
+        <tr>
+            {% for k, v in value.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4 class="table-header">После 11 класса</h4>
+<table class="table table-striped">
+   
+    <thead>
+        <tr>
+            <th scope="col">Код</th>
+            <th scope="col">Специальность</th>
+            <th scope="col">Корпус обучения</th>
+            <th scope="col">Срок обучения</th>
+            <th scope="col">План приема</th>
+            <th scope="col">Количество поданных заявлений через портал mos.ru</th>
+            <th scope="col">Количество человек, сдавших оригиналы</th>
+            <th scope="col">Средний балл по оригиналам</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in response.response11.items %}
+        <tr>
+            {% for k, v in value.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
 

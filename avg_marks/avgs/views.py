@@ -50,33 +50,82 @@ class AppStat(APIView):
         grade = [True, False]
         response = {}
 
+        # for grade_status in grade:
+        #     grader = '09' if grade_status else '11'
+        #     response[f'response{grader}'] = {}
+        #     all_spec_codes = get_spec_codes(grade_status)
+        #     for code in all_spec_codes:
+        #         coder = 'spec_' + code.replace('.', '')
+        #         response[f'response{grader}'][f'{coder}'] = {}
+        #         queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
+        #         response[f'response{grader}'][f'{coder}']['r_qty_mos_'] = queryset.count()
+        #         response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
+        #             queryset.filter(originals=True).count()
+        #         response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
+        #             queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
+        #         r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
+        #                                      .quantize(Decimal('0.01')) - Decimal(0.43)
+        #         response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
+        #             r_avg_marks_originals_
+
         for grade_status in grade:
             grader = '09' if grade_status else '11'
             response[f'response{grader}'] = {}
-            all_spec_codes = get_spec_codes(grade_status)
+            all_spec_codes = get_spec_codes(grade_status)  # get the list of spec_codes for 09 and 11
+
             for code in all_spec_codes:
                 coder = 'spec_' + code.replace('.', '')
                 response[f'response{grader}'][f'{coder}'] = {}
                 queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
+                if grade_status:
+                    spec_queryset = Spec.objects.filter(after_09=True).filter(code=code)
+                    plan_priema_ = spec_queryset[0].plan_priema_09
+                else:
+                    spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
+                    plan_priema_ = spec_queryset[0].plan_priema_11
+
+                # Код
+                response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
+
+                # Специальность
+                response[f'response{grader}'][f'{coder}']['r_spec_name_'] = spec_queryset[0].spec_name
+
+                # Корпус обучения
+                response[f'response{grader}'][f'{coder}']['r_address_'] = spec_queryset[0].address
+
+                # Срок обучения
+                response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study
+
+                # План приема
+                response[f'response{grader}'][f'{coder}']['r_plan_priema_'] = plan_priema_
+
+                # Количество поданных заявлений через портал mos.ru
                 response[f'response{grader}'][f'{coder}']['r_qty_mos_'] = queryset.count()
-                response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
-                    queryset.filter(originals=True).count()
+
+                # Средний балл по заявлениям
                 response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
                     queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
+
+                # Количество человек, сдавших оригиналы
+                response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
+                    queryset.filter(originals=True).count()
+
+                # Средний балл по оригиналам
                 r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
-                    .quantize(Decimal('0.01')) - Decimal(0.43)
+                                             .quantize(Decimal('0.01')) - Decimal(0.43)
                 response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
-                    r_avg_marks_originals_
+                    r_avg_marks_originals_.quantize(Decimal('0.01'))
 
         return Response(response)
 
 
 def index(request):
     def get_spec_codes(_grade):
+        spec_queryset_ = Spec.objects.all()
         if _grade:
-            specs = Spec.objects.filter(after_09=True)
+            specs = spec_queryset_.filter(after_09=True)
         else:
-            specs = Spec.objects.filter(after_11=True)
+            specs = spec_queryset_.filter(after_11=True)
         spec_codes = []
         for i in range(len(specs)):
             spec_codes.append(specs[i].code)
@@ -88,19 +137,49 @@ def index(request):
     for grade_status in grade:
         grader = '09' if grade_status else '11'
         response[f'response{grader}'] = {}
-        all_spec_codes = get_spec_codes(grade_status)
+        all_spec_codes = get_spec_codes(grade_status)  # get the list of spec_codes for 09 and 11
+
         for code in all_spec_codes:
             coder = 'spec_' + code.replace('.', '')
             response[f'response{grader}'][f'{coder}'] = {}
             queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
+            if grade_status:
+                spec_queryset = Spec.objects.filter(after_09=True).filter(code=code)
+                plan_priema_ = spec_queryset[0].plan_priema_09
+            else:
+                spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
+                plan_priema_ = spec_queryset[0].plan_priema_11
+
+            # Код
+            response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
+
+            # Специальность
+            response[f'response{grader}'][f'{coder}']['r_spec_name_'] = spec_queryset[0].spec_name
+
+            # Корпус обучения
+            response[f'response{grader}'][f'{coder}']['r_address_'] = spec_queryset[0].address
+
+            # Срок обучения
+            response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study
+
+            # План приема
+            response[f'response{grader}'][f'{coder}']['r_plan_priema_'] = plan_priema_
+
+            # Количество поданных заявлений через портал mos.ru
             response[f'response{grader}'][f'{coder}']['r_qty_mos_'] = queryset.count()
+
+            # Средний балл по заявлениям
+            # response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
+            #     queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
+
+            # Количество человек, сдавших оригиналы
             response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
                 queryset.filter(originals=True).count()
-            response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
-                queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
+
+            # Средний балл по оригиналам
             r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
                 .quantize(Decimal('0.01')) - Decimal(0.43)
             response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
-                r_avg_marks_originals_
+                r_avg_marks_originals_.quantize(Decimal('0.01'))
 
     return render(request, 'index.html', {'response': response})
