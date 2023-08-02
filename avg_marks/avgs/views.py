@@ -15,8 +15,14 @@ class AppRate(APIView):
         mark = self.request.query_params.get('mark')
         grade = self.request.query_params.get('grade')
 
-        # correcting values
         delta = 0.43
+        # correcting values
+        if code == "54.01.20":
+            delta = 0
+        elif grade == "True" and code == "09.02.07":
+            delta = 0
+        else:
+            delta = 0.43
 
         c_mark = round((float(mark) + delta), 2)
         str(c_mark)
@@ -24,6 +30,7 @@ class AppRate(APIView):
         queryset = Application.objects.filter(spec_code=code).filter(grade=grade).filter(avg_marks__gte=c_mark)
         rate_mos = len(queryset) + 1
         rate_originals = len(queryset.filter(originals=True)) + 1
+
         response = {
             'spec_code': code,
             'mark': mark,
@@ -31,6 +38,7 @@ class AppRate(APIView):
             'rate_originals': rate_originals,
             'grade': grade
         }
+
         return Response(response)
 
 
