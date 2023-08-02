@@ -50,39 +50,36 @@ class AppStat(APIView):
         grade = [True, False]
         response = {}
 
-        # for grade_status in grade:
-        #     grader = '09' if grade_status else '11'
-        #     response[f'response{grader}'] = {}
-        #     all_spec_codes = get_spec_codes(grade_status)
-        #     for code in all_spec_codes:
-        #         coder = 'spec_' + code.replace('.', '')
-        #         response[f'response{grader}'][f'{coder}'] = {}
-        #         queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
-        #         response[f'response{grader}'][f'{coder}']['r_qty_mos_'] = queryset.count()
-        #         response[f'response{grader}'][f'{coder}']['r_qty_originals_'] = \
-        #             queryset.filter(originals=True).count()
-        #         response[f'response{grader}'][f'{coder}']['r_avg_marks_'] = \
-        #             queryset.aggregate(Avg('avg_marks'))['avg_marks__avg'].quantize(Decimal('0.01'))
-        #         r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
-        #                                      .quantize(Decimal('0.01')) - Decimal(0.43)
-        #         response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
-        #             r_avg_marks_originals_
-
         for grade_status in grade:
             grader = '09' if grade_status else '11'
             response[f'response{grader}'] = {}
             all_spec_codes = get_spec_codes(grade_status)  # get the list of spec_codes for 09 and 11
 
             for code in all_spec_codes:
+
                 coder = 'spec_' + code.replace('.', '')
                 response[f'response{grader}'][f'{coder}'] = {}
                 queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
+
                 if grade_status:
                     spec_queryset = Spec.objects.filter(after_09=True).filter(code=code)
                     plan_priema_ = spec_queryset[0].plan_priema_09
+
+                    # убираем поправочный коэффициент у специальностей, набравших почти 100%
+                    if code == "09.02.07" or code == "54.01.20":
+                        delta = 0
+                    else:
+                        delta = 0.43
+
                 else:
                     spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
                     plan_priema_ = spec_queryset[0].plan_priema_11
+
+                    # убираем поправочный коэффициент у специальностей, набравших почти 100%
+                    if code == "54.01.20":
+                        delta = 0
+                    else:
+                        delta = 0.43
 
                 # Код
                 response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
@@ -112,7 +109,7 @@ class AppStat(APIView):
 
                 # Средний балл по оригиналам
                 r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
-                                             .quantize(Decimal('0.01')) - Decimal(0.43)
+                    .quantize(Decimal('0.01')) - Decimal(delta)
                 response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
                     r_avg_marks_originals_.quantize(Decimal('0.01'))
 
@@ -146,9 +143,22 @@ def index(request):
             if grade_status:
                 spec_queryset = Spec.objects.filter(after_09=True).filter(code=code)
                 plan_priema_ = spec_queryset[0].plan_priema_09
+
+                # убираем поправочный коэффициент у специальностей, набравших почти 100%
+                if code == "09.02.07" or code == "54.01.20":
+                    delta = 0
+                else:
+                    delta = 0.43
+
             else:
                 spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
                 plan_priema_ = spec_queryset[0].plan_priema_11
+
+                # убираем поправочный коэффициент у специальностей, набравших почти 100%
+                if code == "54.01.20":
+                    delta = 0
+                else:
+                    delta = 0.43
 
             # Код
             response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
@@ -178,7 +188,7 @@ def index(request):
 
             # Средний балл по оригиналам
             r_avg_marks_originals_ = queryset.filter(originals=True).aggregate(Avg('avg_marks'))['avg_marks__avg'] \
-                .quantize(Decimal('0.01')) - Decimal(0.43)
+                .quantize(Decimal('0.01')) - Decimal(delta)
             response[f'response{grader}'][f'{coder}']['r_avg_marks_originals_'] = \
                 r_avg_marks_originals_.quantize(Decimal('0.01'))
 
