@@ -19,7 +19,7 @@ class AppRate(APIView):
         # correcting values
         if code == "54.01.20":
             delta = 0
-        elif grade == "True" and code == "09.02.07":
+        elif grade == "True" and (code == "09.02.07" or code == "10.02.05"):
             delta = 0
         else:
             delta = 0.43
