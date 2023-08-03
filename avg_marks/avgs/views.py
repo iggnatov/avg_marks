@@ -74,7 +74,7 @@ class AppStat(APIView):
                     plan_priema_ = spec_queryset[0].plan_priema_09
 
                     # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                    if code == "09.02.07" or code == "54.01.20":
+                    if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":
                         delta = 0
                     else:
                         delta = 0.43
@@ -153,7 +153,7 @@ def index(request):
                 plan_priema_ = spec_queryset[0].plan_priema_09
 
                 # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                if code == "09.02.07" or code == "54.01.20":
+                if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":
                     delta = 0
                 else:
                     delta = 0.43
