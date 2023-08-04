@@ -15,14 +15,14 @@ class AppRate(APIView):
         mark = self.request.query_params.get('mark')
         grade = self.request.query_params.get('grade')
 
-        delta = 0.38
+        delta = 0.36
         # correcting values
         if code == "54.01.20":
             delta = 0
-        elif grade == "True" and (code == "09.02.07" or code == "10.02.05"):
+        elif grade == "True" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
             delta = 0
         else:
-            delta = 0.38
+            delta = 0.36
 
         c_mark = round((float(mark) + delta), 2)
         str(c_mark)
@@ -74,10 +74,10 @@ class AppStat(APIView):
                     plan_priema_ = spec_queryset[0].plan_priema_09
 
                     # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                    if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":
+                    if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
                         delta = 0
                     else:
-                        delta = 0.38
+                        delta = 0.36
 
                 else:
                     spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
@@ -87,7 +87,7 @@ class AppStat(APIView):
                     if code == "54.01.20":
                         delta = 0
                     else:
-                        delta = 0.38
+                        delta = 0.36
 
                 # Код
                 response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
@@ -153,10 +153,10 @@ def index(request):
                 plan_priema_ = spec_queryset[0].plan_priema_09
 
                 # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":
+                if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
                     delta = 0
                 else:
-                    delta = 0.38
+                    delta = 0.36
 
             else:
                 spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
@@ -166,7 +166,7 @@ def index(request):
                 if code == "54.01.20":
                     delta = 0
                 else:
-                    delta = 0.38
+                    delta = 0.36
 
             # Код
             response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
