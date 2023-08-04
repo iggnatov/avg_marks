@@ -201,3 +201,26 @@ def index(request):
                 r_avg_marks_originals_.quantize(Decimal('0.01'))
 
     return render(request, 'index.html', {'response': response})
+
+
+class AdminStat(APIView):
+
+    def get(self, request):
+        queryset = Application.objects.all()
+        qty_mos = len(queryset)
+        qty_mos_130211 = len(queryset.filter(spec_code="13.02.11"))
+        qty_mos_130114 = len(queryset.filter(spec_code="13.01.14"))
+        qty_originals = len(queryset.filter(originals="True"))
+        qty_oroginals_130211 = len(queryset.filter(originals=True).filter(spec_code="13.02.11"))
+        qty_originals_130114 = len(queryset.filter(originals=True).filter(spec_code="13.01.14"))
+
+        response = {
+            "qty_mos": qty_mos,
+            "qty_mos_130211": qty_mos_130211,
+            "qty_mos_130114": qty_mos_130114,
+            "qty_originals": qty_originals,
+            "qty_oroginals_130211": qty_oroginals_130211,
+            "qty_originals_130114": qty_originals_130114,
+        }
+
+        return Response(response)
