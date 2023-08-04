@@ -15,14 +15,14 @@ class AppRate(APIView):
         mark = self.request.query_params.get('mark')
         grade = self.request.query_params.get('grade')
 
-        delta = 0.43
+        delta = 0.38
         # correcting values
         if code == "54.01.20":
             delta = 0
         elif grade == "True" and (code == "09.02.07" or code == "10.02.05"):
             delta = 0
         else:
-            delta = 0.43
+            delta = 0.38
 
         c_mark = round((float(mark) + delta), 2)
         str(c_mark)
@@ -77,7 +77,7 @@ class AppStat(APIView):
                     if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":
                         delta = 0
                     else:
-                        delta = 0.43
+                        delta = 0.38
 
                 else:
                     spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
@@ -87,7 +87,7 @@ class AppStat(APIView):
                     if code == "54.01.20":
                         delta = 0
                     else:
-                        delta = 0.43
+                        delta = 0.38
 
                 # Код
                 response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
@@ -156,7 +156,7 @@ def index(request):
                 if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":
                     delta = 0
                 else:
-                    delta = 0.43
+                    delta = 0.38
 
             else:
                 spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
@@ -166,7 +166,7 @@ def index(request):
                 if code == "54.01.20":
                     delta = 0
                 else:
-                    delta = 0.43
+                    delta = 0.38
 
             # Код
             response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
