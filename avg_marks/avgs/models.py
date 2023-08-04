@@ -12,3 +12,8 @@ class Application(models.Model):
     def __str__(self):
         return f'{self.spec_code} - {self.financing_type} - {self.avg_marks}'
 
+
+class AppRQty(models.Model):
+    today = models.CharField(max_length=10)
+    day = models.CharField(max_length=10)
+    q_ty = models.PositiveSmallIntegerField(null=True, blank=True)

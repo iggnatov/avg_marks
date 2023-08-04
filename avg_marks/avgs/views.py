@@ -1,12 +1,12 @@
 from decimal import *
 
-from django.db.models import Avg
+from django.db.models import Avg, Sum
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from specs.models import Spec
-from .models import Application
+from .models import Application, AppRQty
 
 
 class AppRate(APIView):
@@ -214,6 +214,16 @@ class AdminStat(APIView):
         qty_oroginals_130211 = len(queryset.filter(originals=True).filter(spec_code="13.02.11"))
         qty_originals_130114 = len(queryset.filter(originals=True).filter(spec_code="13.01.14"))
 
+        rqty = AppRQty.objects.all().order_by('day')
+        rqty_qty = rqty.aggregate(Sum('q_ty'))['q_ty__sum']
+
+        rqty_response = {}
+        for elem in rqty:
+            rqty_response[f'{elem.day}'] = elem.q_ty
+        rqty_response_str = ''
+        for k, v in rqty_response.items():
+            rqty_response_str += f'{k}: {v} <br />'
+
         response = {
             "qty_mos": qty_mos,
             "qty_mos_130211": qty_mos_130211,
@@ -221,6 +231,8 @@ class AdminStat(APIView):
             "qty_originals": qty_originals,
             "qty_oroginals_130211": qty_oroginals_130211,
             "qty_originals_130114": qty_originals_130114,
+            "rqty_qty": rqty_qty,
+            "rqty_response": rqty_response_str,
         }
 
         return Response(response)
