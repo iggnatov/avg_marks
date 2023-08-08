@@ -99,7 +99,7 @@ class AppStat(APIView):
                 response[f'response{grader}'][f'{coder}']['r_address_'] = spec_queryset[0].address
 
                 # Срок обучения
-                response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study
+                response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study_09
 
                 # План приема
                 response[f'response{grader}'][f'{coder}']['r_plan_priema_'] = plan_priema_
@@ -178,7 +178,10 @@ def index(request):
             response[f'response{grader}'][f'{coder}']['r_address_'] = spec_queryset[0].address
 
             # Срок обучения
-            response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study
+            if grader == '09':
+                response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study_09
+            else:
+                response[f'response{grader}'][f'{coder}']['r_period_of_study_'] = spec_queryset[0].period_of_study_11
 
             # План приема
             response[f'response{grader}'][f'{coder}']['r_plan_priema_'] = plan_priema_

@@ -7,7 +7,8 @@ class Spec(models.Model):
     after_09 = models.BooleanField(default=True)
     after_11 = models.BooleanField(default=True)
     address = models.CharField(max_length=255, blank=True)
-    period_of_study = models.CharField(max_length=100, blank=True)
+    period_of_study_09 = models.CharField(max_length=100, blank=True)
+    period_of_study_11 = models.CharField(max_length=100, blank=True)
     plan_priema_09 = models.PositiveSmallIntegerField(null=True, blank=True)
     plan_priema_11 = models.PositiveSmallIntegerField(null=True, blank=True)
 
