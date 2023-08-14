@@ -19,8 +19,12 @@ class AppRate(APIView):
         # correcting values
         if code == "54.01.20":
             delta = 0
+        elif grade == "False" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
+            delta = 0.15
         elif grade == "True" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
             delta = 0
+        elif grade == "True" and (code == "13.02.11" or code == "09.02.01"):
+            delta = 0.15
         else:
             delta = 0.36
 
@@ -76,6 +80,8 @@ class AppStat(APIView):
                     # убираем поправочный коэффициент у специальностей, набравших почти 100%
                     if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
                         delta = 0
+                    elif code == "09.02.01" or code == "13.02.11":
+                        delta = 0.15
                     else:
                         delta = 0.36
 
@@ -87,7 +93,7 @@ class AppStat(APIView):
                     if code == "54.01.20":
                         delta = 0
                     else:
-                        delta = 0.36
+                        delta = 0.15
 
                 # Код
                 response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
@@ -155,6 +161,8 @@ def index(request):
                 # убираем поправочный коэффициент у специальностей, набравших почти 100%
                 if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
                     delta = 0
+                elif code == "09.02.01" or code == "13.02.11":
+                    delta = 0.15
                 else:
                     delta = 0.36
 
@@ -166,7 +174,7 @@ def index(request):
                 if code == "54.01.20":
                     delta = 0
                 else:
-                    delta = 0.36
+                    delta = 0.15
 
             # Код
             response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
