@@ -15,18 +15,18 @@ class AppRate(APIView):
         mark = self.request.query_params.get('mark')
         grade = self.request.query_params.get('grade')
 
-        delta = 0.36
+        delta = 0
         # correcting values
-        if code == "54.01.20":
-            delta = 0
-        elif grade == "False" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
-            delta = 0.15
-        elif grade == "True" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
-            delta = 0
-        elif grade == "True" and (code == "13.02.11" or code == "09.02.01"):
-            delta = 0.15
-        else:
-            delta = 0.36
+        # if code == "54.01.20":
+        #     delta = 0
+        # elif grade == "False" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
+        #     delta = 0.15
+        # elif grade == "True" and (code == "09.02.07" or code == "09.02.06" or code == "10.02.05"):
+        #     delta = 0
+        # elif grade == "True" and (code == "13.02.11" or code == "09.02.01"):
+        #     delta = 0.15
+        # else:
+        #     delta = 0.36
 
         c_mark = round((float(mark) + delta), 2)
         str(c_mark)
@@ -61,6 +61,7 @@ class AppStat(APIView):
 
         grade = [True, False]
         response = {}
+        delta = 0
 
         for grade_status in grade:
             grader = '09' if grade_status else '11'
@@ -73,27 +74,29 @@ class AppStat(APIView):
                 response[f'response{grader}'][f'{coder}'] = {}
                 queryset = Application.objects.filter(grade=grade_status).filter(spec_code=code)
 
+
                 if grade_status:
                     spec_queryset = Spec.objects.filter(after_09=True).filter(code=code)
                     plan_priema_ = spec_queryset[0].plan_priema_09
 
                     # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                    if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
-                        delta = 0
-                    elif code == "09.02.01" or code == "13.02.11":
-                        delta = 0.15
-                    else:
-                        delta = 0.36
+
+                    # if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
+                    #     delta = 0
+                    # elif code == "09.02.01" or code == "13.02.11":
+                    #     delta = 0.15
+                    # else:
+                    #     delta = 0.36
 
                 else:
                     spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
                     plan_priema_ = spec_queryset[0].plan_priema_11
 
                     # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                    if code == "54.01.20":
-                        delta = 0
-                    else:
-                        delta = 0.15
+                    # if code == "54.01.20":
+                    #     delta = 0
+                    # else:
+                    #     delta = 0.15
 
                 # Код
                 response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
@@ -144,6 +147,7 @@ def index(request):
 
     grade = [True, False]
     response = {}
+    delta = 0
 
     for grade_status in grade:
         grader = '09' if grade_status else '11'
@@ -159,22 +163,22 @@ def index(request):
                 plan_priema_ = spec_queryset[0].plan_priema_09
 
                 # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                if code == "09.02.07" or code == "54.01.20" or code == "10.02.05":  #or code == "09.02.06"
-                    delta = 0
-                elif code == "09.02.01" or code == "13.02.11":
-                    delta = 0.15
-                else:
-                    delta = 0.36
+                # if code == "09.02.07" or code == "09.02.06" or code == "54.01.20" or code == "10.02.05":
+                #     delta = 0
+                # elif code == "09.02.01" or code == "13.02.11":
+                #     delta = 0.15
+                # else:
+                #     delta = 0.36
 
             else:
                 spec_queryset = Spec.objects.filter(after_11=True).filter(code=code)
                 plan_priema_ = spec_queryset[0].plan_priema_11
 
                 # убираем поправочный коэффициент у специальностей, набравших почти 100%
-                if code == "54.01.20":
-                    delta = 0
-                else:
-                    delta = 0.15
+                # if code == "54.01.20":
+                #     delta = 0
+                # else:
+                #     delta = 0.15
 
             # Код
             response[f'response{grader}'][f'{coder}']['r_code_'] = spec_queryset[0].code
